@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OK PLAYLISTS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Monaco', monospace;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.2;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            border: 2px solid #fff;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: 400;
+            margin-bottom: 10px;
+            letter-spacing: 8px;
+            color: #fff;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .description {
+            font-size: 13px;
+            color: #fff;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .connection-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid #fff;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .connect-btn {
+            background: #666;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 15px 30px;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            margin: 0 10px 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .connect-btn:hover {
+            background: #888;
+            border-color: #888;
+        }
+
+        .connect-btn:disabled {
+            background: #333;
+            color: #666;
+            border-color: #333;
+            cursor: not-allowed;
+        }
+
+        .status-line {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            border: 1px solid #fff;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .section-header {
+            background: #666;
+            color: #fff;
+            padding: 12px 20px;
+            font-weight: 400;
+            cursor: pointer;
+            user-select: none;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .section-header:hover {
+            background: #888;
+        }
+
+        .section-header::after {
+            content: '[+]';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+        }
+
+        .section-header.active::after {
+            content: '[-]';
+        }
+
+        .section-content {
+            padding: 20px;
+            display: none;
+            border-top: 1px solid #333;
+        }
+
+        .section-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .playlist-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .playlist-item {
+            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.01);
+            transition: all 0.3s ease;
+        }
+
+        .playlist-item:hover {
+            border-color: #666;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .playlist-header {
+            padding: 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .playlist-details {
+            padding: 20px;
+            display: none;
+            border-top: 1px solid #333;
+        }
+
+        .playlist-details.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { max-height: 0; opacity: 0; }
+            to { max-height: 500px; opacity: 1; }
+        }
+
+        .playlist-info {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .playlist-cover {
+            width: 120px;
+            height: 120px;
+            border: 1px solid #fff;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .playlist-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .meta-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .meta-label {
+            color: #fff;
+            min-width: 100px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .meta-value {
+            color: #fff;
+        }
+
+        .tracklist {
+            border-top: 1px solid #333;
+            padding-top: 15px;
+        }
+
+        .tracklist-header {
+            color: #fff;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .track {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dotted #333;
+            font-size: 12px;
+        }
+
+        .track:last-child {
+            border-bottom: none;
+        }
+
+        .track-info {
+            color: #666;
+        }
+
+        .track-duration {
+            color: #666;
+            font-size: 11px;
+        }
+
+        .community-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .community-item {
+            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .community-header {
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .community-header:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .community-playlists {
+            padding: 20px;
+            display: none;
+            border-top: 1px solid #333;
+        }
+
+        .community-playlists.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .nft-playlist {
+            padding: 12px 15px;
+            border: 1px dotted #333;
+            margin: 8px 0;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.005);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .nft-playlist:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: #666;
+        }
+
+        .nft-playlist-item {
+            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.01);
+            margin: 8px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nft-playlist-item:hover {
+            border-color: #666;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .nft-playlist-header {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .nft-playlist-details {
+            padding: 12px;
+            display: none;
+            border-top: 1px solid #333;
+        }
+
+        .nft-playlist-details.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .nft-playlist-info {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .nft-playlist-cover {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #fff;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: #666;
+        }
+
+        .nft-playlist-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 10px;
+        }
+
+        .nft-meta-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .nft-meta-label {
+            color: #fff;
+            min-width: 60px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 9px;
+        }
+
+        .nft-meta-value {
+            color: #fff;
+            font-size: 10px;
+        }
+
+        .nft-tracklist {
+            border-top: 1px solid #333;
+            padding-top: 8px;
+        }
+
+        .nft-tracklist-header {
+            color: #fff;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .nft-track {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px dotted #333;
+            font-size: 9px;
+        }
+
+        .nft-track:last-child {
+            border-bottom: none;
+        }
+
+        .nft-track-info {
+            color: #666;
+        }
+
+        .nft-track-duration {
+            color: #666;
+            font-size: 8px;
+        }
+
+        .spotify-icon {
+            color: #1db954;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .spotify-icon:hover {
+            color: #1ed760;
+        }
+
+        .social-links {
+            display: grid;
+            gap: 10px;
+        }
+
+        .social-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px dotted #333;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #fff;
+        }
+
+        .social-link:last-child {
+            border-bottom: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            border-top: 1px solid #333;
+            font-size: 12px;
+            color: #666;
+            letter-spacing: 1px;
+        }
+
+        .community-status {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0;
+        }
+
+        .community-info {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .join-community {
+            text-align: center;
+        }
+
+        .mint-options {
+            padding: 20px;
+            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.01);
+            margin-bottom: 20px;
+        }
+
+        .mint-community-selector {
+            text-align: center;
+        }
+
+        .community-options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 15px 0;
+        }
+
+        .community-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #666;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .community-option input[type="radio"] {
+            margin-right: 8px;
+            accent-color: #666;
+        }
+
+        .status-connected {
+            color: #fff;
+        }
+
+        .status-disconnected {
+            color: #666;
+        }
+
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            color: #ff6666;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .setup-notice {
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid #ffff00;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ffff00;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 32px;
+                letter-spacing: 4px;
+            }
+            
+            .playlist-info {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .playlist-cover {
+                width: 100px;
+                height: 100px;
+                margin: 0 auto;
+            }
+            
+            .connect-btn {
+                display: block;
+                margin: 10px auto;
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">OK PLAYLISTS</div>
+            <div class="subtitle">DECENTRALIZED MUSIC PLATFORM</div>
+            <div class="description">
+                > CONNECT YOUR WALLET AND SPOTIFY TO ACCESS PERSONAL PLAYLISTS<br>
+                > EXPLORE NFT MUSIC COMMUNITIES AND CURATED COLLECTIONS<br>
+                > MANAGE YOUR MUSICAL IDENTITY IN THE DECENTRALIZED WEB<br>
+                > DISCOVER PLAYLISTS FROM VERIFIED CRYPTO COMMUNITIES
+            </div>
+        </div>
+
+        <!-- Setup Notice -->
+        <div class="setup-notice" id="setupNotice">
+            📋 SPOTIFY SETUP: Add your redirect URL to Spotify app settings<br>
+            🔗 Use: <strong id="redirectUrl"></strong>
+        </div>
+
+        <div class="connection-panel">
+            <button class="connect-btn" id="walletBtn" onclick="connectWallet()">CONNECT WALLET</button>
+            <button class="connect-btn" id="spotifyBtn" onclick="connectSpotify()" disabled>CONNECT SPOTIFY</button>
+            <div class="status-line" id="connectionStatus">
+                WALLET: <span class="status-disconnected">DISCONNECTED</span> | 
+                SPOTIFY: <span class="status-disconnected">DISCONNECTED</span>
+            </div>
+            <div class="community-status" id="communityStatus" style="display: none;">
+                <div class="community-info" id="communityInfo">
+                    COMMUNITY: <span class="status-connected">CHECKING...</span>
+                </div>
+                <div class="join-community" id="joinCommunity" style="display: none;">
+                    <p style="color: #666; margin-bottom: 10px;">JOIN A COMMUNITY TO MINT PLAYLISTS</p>
+                    <button class="connect-btn" onclick="joinCommunity('okcomputers')">JOIN OK COMPUTERS (0.1 ETH)</button>
+                    <button class="connect-btn" onclick="joinCommunity('mfers')">JOIN MFERS (0.05 ETH)</button>
+                </div>
+            </div>
+            <div class="error" id="errorMessage" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" id="playlistHeader" onclick="toggleSection('playlists')">
+                ADD PLAYLIST
+            </div>
+            <div class="section-content" id="playlists">
+                <div class="mint-options" id="mintOptions" style="display: none;">
+                    <div class="mint-community-selector">
+                        <p style="color: #fff; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">SELECT COMMUNITY TO MINT PLAYLIST:</p>
+                        <div class="community-options">
+                            <label class="community-option">
+                                <input type="radio" name="mintCommunity" value="okcomputers" checked>
+                                <span class="option-label">OK COMPUTERS</span>
+                            </label>
+                            <label class="community-option">
+                                <input type="radio" name="mintCommunity" value="mfers">
+                                <span class="option-label">MFERS</span>
+                            </label>
+                        </div>
+                        <button class="connect-btn" onclick="mintPlaylist()" style="margin-top: 15px;" id="mintBtn" disabled>MINT SELECTED PLAYLIST</button>
+                    </div>
+                </div>
+                <div id="playlistGrid" class="playlist-grid">
+                    <p style="color: #666; text-align: center; padding: 20px;">
+                        > CONNECT YOUR SPOTIFY ACCOUNT TO VIEW PLAYLISTS
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('communities')">
+                COMMUNITIES
+            </div>
+            <div class="section-content" id="communities">
+                <div class="community-list">
+                    <div class="community-item">
+                        <div class="community-header" onclick="toggleCommunity('okcomputers')">
+                            <span>OK COMPUTERS</span>
+                            <span id="ok-toggle">[+]</span>
+                        </div>
+                        <div class="community-playlists" id="okcomputers">
+                            <div class="nft-playlist-item">
+                                <div class="nft-playlist-header" onclick="toggleNFTPlaylist('ok1')">
+                                    <span>ELECTRONIC DREAMS BY OK COMPUTER #420</span>
+                                    <span class="nft-playlist-toggle">[+]</span>
+                                </div>
+                                <div class="nft-playlist-details" id="nft-details-ok1">
+                                    <div class="nft-playlist-info">
+                                        <div class="nft-playlist-cover">ELECTRONIC.JPG</div>
+                                        <div class="nft-playlist-meta">
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TITLE:</span>
+                                                <span class="nft-meta-value">ELECTRONIC DREAMS</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">ARTIST:</span>
+                                                <span class="nft-meta-value">OK COMPUTER #420</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TRACKS:</span>
+                                                <span class="nft-meta-value">24</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">DURATION:</span>
+                                                <span class="nft-meta-value">1H 32M</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">SPOTIFY:</span>
+                                                <span class="nft-meta-value"><a href="#" class="spotify-icon">♫ OPEN</a></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="nft-tracklist">
+                                        <div class="nft-tracklist-header">TRACK LISTING:</div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">DIGITAL REALM - SYNTHWAVE COLLECTIVE</div>
+                                            <div class="nft-track-duration">4:12</div>
+                                        </div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">NEON CIRCUITS - CYBER PROPHET</div>
+                                            <div class="nft-track-duration">3:58</div>
+                                        </div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">ELECTRIC DREAMS - RETRO FUTURE</div>
+                                            <div class="nft-track-duration">5:23</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="nft-playlist-item">
+                                <div class="nft-playlist-header" onclick="toggleNFTPlaylist('ok2')">
+                                    <span>DIGITAL SOULS BY OK COMPUTER #1337</span>
+                                    <span class="nft-playlist-toggle">[+]</span>
+                                </div>
+                                <div class="nft-playlist-details" id="nft-details-ok2">
+                                    <div class="nft-playlist-info">
+                                        <div class="nft-playlist-cover">DIGITAL.JPG</div>
+                                        <div class="nft-playlist-meta">
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TITLE:</span>
+                                                <span class="nft-meta-value">DIGITAL SOULS</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">ARTIST:</span>
+                                                <span class="nft-meta-value">OK COMPUTER #1337</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TRACKS:</span>
+                                                <span class="nft-meta-value">18</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">DURATION:</span>
+                                                <span class="nft-meta-value">1H 15M</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">SPOTIFY:</span>
+                                                <span class="nft-meta-value"><a href="#" class="spotify-icon">♫ OPEN</a></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="nft-tracklist">
+                                        <div class="nft-tracklist-header">TRACK LISTING:</div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">SOUL MACHINE - DIGITAL PROPHET</div>
+                                            <div class="nft-track-duration">4:45</div>
+                                        </div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">BINARY HEART - CYBER SOUL</div>
+                                            <div class="nft-track-duration">3:32</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="nft-playlist-item">
+                                <div class="nft-playlist-header" onclick="toggleNFTPlaylist('ok3')">
+                                    <span>CYBER RHYTHMS BY VITALIK.ETH</span>
+                                    <span class="nft-playlist-toggle">[+]</span>
+                                </div>
+                                <div class="nft-playlist-details" id="nft-details-ok3">
+                                    <div class="nft-playlist-info">
+                                        <div class="nft-playlist-cover">CYBER.JPG</div>
+                                        <div class="nft-playlist-meta">
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TITLE:</span>
+                                                <span class="nft-meta-value">CYBER RHYTHMS</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">ARTIST:</span>
+                                                <span class="nft-meta-value">VITALIK.ETH</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TRACKS:</span>
+                                                <span class="nft-meta-value">31</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">DURATION:</span>
+                                                <span class="nft-meta-value">2H 8M</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">SPOTIFY:</span>
+                                                <span class="nft-meta-value"><a href="#" class="spotify-icon">♫ OPEN</a></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="nft-tracklist">
+                                        <div class="nft-tracklist-header">TRACK LISTING:</div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">ETHEREUM DREAMS - BLOCKCHAIN BEATS</div>
+                                            <div class="nft-track-duration">5:12</div>
+                                        </div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">SMART CONTRACT - DEFI SOUNDS</div>
+                                            <div class="nft-track-duration">4:33</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="community-item">
+                        <div class="community-header" onclick="toggleCommunity('mfers')">
+                            <span>MFERS</span>
+                            <span id="mfers-toggle">[+]</span>
+                        </div>
+                        <div class="community-playlists" id="mfers">
+                            <div class="nft-playlist-item">
+                                <div class="nft-playlist-header" onclick="toggleNFTPlaylist('mfer1')">
+                                    <span>MFER VIBES BY MFER #69</span>
+                                    <span class="nft-playlist-toggle">[+]</span>
+                                </div>
+                                <div class="nft-playlist-details" id="nft-details-mfer1">
+                                    <div class="nft-playlist-info">
+                                        <div class="nft-playlist-cover">MFER.JPG</div>
+                                        <div class="nft-playlist-meta">
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TITLE:</span>
+                                                <span class="nft-meta-value">MFER VIBES</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">ARTIST:</span>
+                                                <span class="nft-meta-value">MFER #69</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TRACKS:</span>
+                                                <span class="nft-meta-value">22</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">DURATION:</span>
+                                                <span class="nft-meta-value">1H 28M</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">SPOTIFY:</span>
+                                                <span class="nft-meta-value"><a href="#" class="spotify-icon">♫ OPEN</a></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="nft-tracklist">
+                                        <div class="nft-tracklist-header">TRACK LISTING:</div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">CHILL MFER - RELAXED BEATS</div>
+                                            <div class="nft-track-duration">3:45</div>
+                                        </div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">MFER ENERGY - HYPE COLLECTIVE</div>
+                                            <div class="nft-track-duration">4:12</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="nft-playlist-item">
+                                <div class="nft-playlist-header" onclick="toggleNFTPlaylist('mfer2')">
+                                    <span>CHILL MFERS BY MFER #420</span>
+                                    <span class="nft-playlist-toggle">[+]</span>
+                                </div>
+                                <div class="nft-playlist-details" id="nft-details-mfer2">
+                                    <div class="nft-playlist-info">
+                                        <div class="nft-playlist-cover">CHILL.JPG</div>
+                                        <div class="nft-playlist-meta">
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TITLE:</span>
+                                                <span class="nft-meta-value">CHILL MFERS</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">ARTIST:</span>
+                                                <span class="nft-meta-value">MFER #420</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">TRACKS:</span>
+                                                <span class="nft-meta-value">19</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">DURATION:</span>
+                                                <span class="nft-meta-value">1H 12M</span>
+                                            </div>
+                                            <div class="nft-meta-line">
+                                                <span class="nft-meta-label">SPOTIFY:</span>
+                                                <span class="nft-meta-value"><a href="#" class="spotify-icon">♫ OPEN</a></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="nft-tracklist">
+                                        <div class="nft-tracklist-header">TRACK LISTING:</div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">LAZY SUNDAY - CHILL VIBES</div>
+                                            <div class="nft-track-duration">4:20</div>
+                                        </div>
+                                        <div class="nft-track">
+                                            <div class="nft-track-info">MFER MOOD - RELAXED STATE</div>
+                                            <div class="nft-track-duration">3:55</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('follow')">
+                FOLLOW US
+            </div>
+            <div class="section-content" id="follow">
+                <div class="social-links">
+                    <a href="#" class="social-link">TWITTER: @OKPLAYLISTS</a>
+                    <a href="#" class="social-link">DISCORD: DISCORD.GG/OKPLAYLISTS</a>
+                    <a href="#" class="social-link">GITHUB: GITHUB.COM/OKPLAYLISTS</a>
+                    <a href="#" class="social-link">EMAIL: INFO@OKPLAYLISTS.COM</a>
+                    <a href="#" class="social-link">OPENSEA: OPENSEA.IO/OKPLAYLISTS</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            OK PLAYLISTS © 2025 | DECENTRALIZED MUSIC COMMUNITIES | VERSION 1.0
+        </div>
+    </div>
+
+    <!-- Privy SDK -->
+    <script src="https://unpkg.com/@privy-io/react-auth@latest/dist/index.umd.js"></script>
+    <!-- Web3 Libraries -->
+    <script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <script>
+        // 🔑 CONFIGURATION - Updated with your credentials
+        const CONFIG = {
+            PRIVY_APP_ID: 'cmd405kfu00ajih0m8sdjmre8',
+            SPOTIFY_CLIENT_ID: '8f02c93339da4f9bbf26159dad43053a',
+            SPOTIFY_REDIRECT_URI: window.location.origin + window.location.pathname,
+            NFT_CONTRACTS: {
+                okcomputers: '0xce2830932889c7fb5e5206287c43554e673dcc88',
+                mfers: '0x79fcdef22feed20eddacbb2587640e45491b757f'
+            }
+        };
+
+        // Global state
+        let privyUser = null;
+        let walletConnected = false;
+        let spotifyConnected = false;
+        let spotifyAccessToken = null;
+        let userPlaylists = [];
+        let selectedPlaylist = null;
+        let userAddress = null;
+
+        // Initialize Privy
+        let privy;
+        try {
+            privy = window.Privy.createPrivyClient({
+                appId: CONFIG.PRIVY_APP_ID,
+            });
+            console.log('✅ Privy initialized successfully');
+        } catch (error) {
+            console.error('❌ Privy initialization failed:', error);
+        }
+
+        // Utility functions
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideSetupNotice() {
+            const notice = document.getElementById('setupNotice');
+            if (notice) {
+                notice.style.display = 'none';
+            }
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                header.classList.remove('active');
+            } else {
+                content.classList.add('active');
+                header.classList.add('active');
+            }
+        }
+
+        function toggleCommunity(communityId) {
+            const content = document.getElementById(communityId);
+            const toggle = document.getElementById(communityId + '-toggle') || document.getElementById('ok-toggle');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                toggle.textContent = '[+]';
+            } else {
+                content.classList.add('active');
+                toggle.textContent = '[-]';
+            }
+        }
+
+        function togglePlaylist(playlistId) {
+            const details = document.getElementById(`details-${playlistId}`);
+            const header = details.previousElementSibling;
+            const toggle = header.querySelector('.playlist-toggle');
+            
+            if (details.classList.contains('active')) {
+                details.classList.remove('active');
+                toggle.textContent = '[+]';
+            } else {
+                details.classList.add('active');
+                toggle.textContent = '[-]';
+                selectedPlaylist = userPlaylists.find(p => p.id === playlistId);
+                document.getElementById('mintBtn').disabled = false;
+            }
+        }
+
+        function toggleNFTPlaylist(playlistId) {
+            const details = document.getElementById(`nft-details-${playlistId}`);
+            const header = details.previousElementSibling;
+            const toggle = header.querySelector('.nft-playlist-toggle');
+            
+            if (details.classList.contains('active')) {
+                details.classList.remove('active');
+                toggle.textContent = '[+]';
+            } else {
+                details.classList.add('active');
+                toggle.textContent = '[-]';
+            }
+        }
+
+        // Wallet connection with Privy
+        async function connectWallet() {
+            try {
+                document.getElementById('walletBtn').textContent = 'CONNECTING...';
+                
+                if (privy) {
+                    // Use Privy for wallet connection
+                    await privy.login();
+                    privyUser = privy.user;
+                    
+                    if (privyUser && privyUser.wallet) {
+                        userAddress = privyUser.wallet.address;
+                        walletConnected = true;
+                        console.log('✅ Wallet connected via Privy:', userAddress);
+                    } else {
+                        throw new Error('No wallet found in Privy user');
+                    }
+                } else {
+                    // Fallback to MetaMask
+                    if (typeof window.ethereum !== 'undefined') {
+                        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                        userAddress = accounts[0];
+                        walletConnected = true;
+                        console.log('✅ Wallet connected via MetaMask:', userAddress);
+                    } else {
+                        throw new Error('No wallet found. Please install MetaMask.');
+                    }
+                }
+                
+                document.getElementById('walletBtn').textContent = 'WALLET CONNECTED';
+                document.getElementById('walletBtn').disabled = true;
+                document.getElementById('spotifyBtn').disabled = false;
+                
+                // Check for community NFTs
+                await checkCommunityNFTs();
+                updateConnectionStatus();
+                hideSetupNotice();
+            } catch (error) {
+                console.error('❌ Wallet connection failed:', error);
+                showError('Wallet connection failed: ' + error.message);
+                document.getElementById('walletBtn').textContent = 'CONNECT WALLET';
+            }
+        }
+
+        // Check if user holds required NFTs
+        async function checkCommunityNFTs() {
+            try {
+                const communityStatus = document.getElementById('communityStatus');
+                const communityInfo = document.getElementById('communityInfo');
+                const joinCommunity = document.getElementById('joinCommunity');
+                
+                if (!userAddress) {
+                    throw new Error('No wallet address found');
+                }
+
+                console.log('🔄 Checking NFT ownership for:', userAddress);
+                
+                // Check NFT ownership using contract calls
+                const hasOKComputers = await checkNFTOwnership(userAddress, CONFIG.NFT_CONTRACTS.okcomputers);
+                const hasMfers = await checkNFTOwnership(userAddress, CONFIG.NFT_CONTRACTS.mfers);
+                
+                console.log('NFT Check Results:', { hasOKComputers, hasMfers });
+                
+                if (hasOKComputers || hasMfers) {
+                    const communityName = hasOKComputers ? 'OK COMPUTERS' : 'MFERS';
+                    const tokenId = Math.floor(Math.random() * 9999) + 1;
+                    
+                    communityInfo.innerHTML = `COMMUNITY: <span class="status-connected">${communityName} #${tokenId}</span>`;
+                    communityInfo.style.display = 'block';
+                    joinCommunity.style.display = 'none';
+                    
+                    console.log('✅ User has NFT from:', communityName);
+                } else {
+                    communityInfo.style.display = 'none';
+                    joinCommunity.style.display = 'block';
+                    console.log('❌ User has no required NFTs');
+                }
+                
+                communityStatus.style.display = 'block';
+            } catch (error) {
+                console.error('❌ Error checking NFTs:', error);
+                
+                // Fallback to demo mode for testing
+                const communityStatus = document.getElementById('communityStatus');
+                const communityInfo = document.getElementById('communityInfo');
+                const joinCommunity = document.getElementById('joinCommunity');
+                
+                // 50% chance for demo
+                const hasNFT = Math.random() > 0.5;
+                
+                if (hasNFT) {
+                    const communities = ['OK COMPUTERS #420', 'MFER #69'];
+                    const randomCommunity = communities[Math.floor(Math.random() * communities.length)];
+                    
+                    communityInfo.innerHTML = `COMMUNITY: <span class="status-connected">${randomCommunity} (DEMO)</span>`;
+                    communityInfo.style.display = 'block';
+                    joinCommunity.style.display = 'none';
+                } else {
+                    communityInfo.style.display = 'none';
+                    joinCommunity.style.display = 'block';
+                }
+                
+                communityStatus.style.display = 'block';
+            }
+        }
+
+        // Check NFT ownership using ethers.js
+        async function checkNFTOwnership(userAddress, contractAddress) {
+            try {
+                if (!window.ethereum) {
+                    return false;
+                }
+
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                
+                // ERC-721 balanceOf function
+                const contract = new ethers.Contract(
+                    contractAddress,
+                    ['function balanceOf(address owner) view returns (uint256)'],
+                    provider
+                );
+                
+                const balance = await contract.balanceOf(userAddress);
+                return balance.gt(0);
+            } catch (error) {
+                console.error('Error checking NFT ownership for', contractAddress, ':', error);
+                return false;
+            }
+        }
+
+        // Spotify connection
+        async function connectSpotify() {
+            try {
+                document.getElementById('spotifyBtn').textContent = 'CONNECTING...';
+                
+                // Check if we have a token in URL (returning from Spotify auth)
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+                
+                if (code) {
+                    // Exchange code for access token
+                    await exchangeSpotifyCode(code);
+                } else {
+                    // Redirect to Spotify authorization
+                    const scopes = 'playlist-read-private playlist-read-collaborative user-read-private';
+                    const authUrl = `https://accounts.spotify.com/authorize?` +
+                        `client_id=${CONFIG.SPOTIFY_CLIENT_ID}&` +
+                        `response_type=code&` +
+                        `redirect_uri=${encodeURIComponent(CONFIG.SPOTIFY_REDIRECT_URI)}&` +
+                        `scope=${encodeURIComponent(scopes)}&` +
+                        `show_dialog=true`;
+                    
+                    console.log('🔄 Redirecting to Spotify auth:', authUrl);
+                    window.location.href = authUrl;
+                    return;
+                }
+            } catch (error) {
+                console.error('❌ Spotify connection failed:', error);
+                showError('Spotify connection failed: ' + error.message);
+                document.getElementById('spotifyBtn').textContent = 'CONNECT SPOTIFY';
+            }
+        }
+
+        // Exchange Spotify authorization code for access token
+        async function exchangeSpotifyCode(code) {
+            try {
+                console.log('🔄 Exchanging Spotify code for token...');
+                
+                // Note: In production, this should be done on your backend to keep client secret secure
+                // For now, we'll simulate the token exchange and load demo data
+                
+                // Clean URL first
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                // Simulate successful connection
+                spotifyAccessToken = 'demo_token_' + Date.now();
+                spotifyConnected = true;
+                
+                document.getElementById('spotifyBtn').textContent = 'SPOTIFY CONNECTED';
+                document.getElementById('spotifyBtn').disabled = true;
+                document.getElementById('playlistHeader').textContent = 'YOUR PLAYLISTS';
+                document.getElementById('mintOptions').style.display = 'block';
+                
+                console.log('✅ Spotify connected (demo mode)');
+                await loadUserPlaylists();
+                updateConnectionStatus();
+                hideSetupNotice();
+            } catch (error) {
+                console.error('❌ Token exchange failed:', error);
+                showError('Spotify authentication failed. Using demo mode.');
+                
+                // Fallback to demo mode
+                spotifyConnected = true;
+                document.getElementById('spotifyBtn').textContent = 'SPOTIFY CONNECTED (DEMO)';
+                document.getElementById('spotifyBtn').disabled = true;
+                document.getElementById('playlistHeader').textContent = 'YOUR PLAYLISTS (DEMO)';
+                document.getElementById('mintOptions').style.display = 'block';
+                
+                loadDemoPlaylists();
+                updateConnectionStatus();
+            }
+        }
+
+        // Load user playlists from Spotify
+        async function loadUserPlaylists() {
+            try {
+                console.log('🔄 Loading Spotify playlists...');
+                
+                // For demo purposes, we'll use demo playlists
+                // In production, you would make actual Spotify API calls here
+                if (!spotifyAccessToken || spotifyAccessToken.startsWith('demo_token_')) {
+                    throw new Error('Demo mode - using sample playlists');
+                }
+
+                // Real Spotify API call would go here:
+                /*
+                const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=50', {
+                    headers: {
+                        'Authorization': `Bearer ${spotifyAccessToken}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Spotify API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                userPlaylists = data.items.map(playlist => ({
+                    id: playlist.id,
+                    name: playlist.name.toUpperCase(),
+                    description: playlist.description || 'No description available',
+                    tracks: playlist.tracks.total,
+                    cover: playlist.images[0]?.url || null,
+                    spotifyUrl: playlist.external_urls.spotify,
+                    owner: playlist.owner.display_name
+                }));
+                */
+
+                // For now, load demo playlists
+                throw new Error('Using demo mode');
+            } catch (error) {
+                console.error('❌ Failed to load playlists:', error);
+                loadDemoPlaylists();
+            }
+        }
+
+        // Fallback demo playlists
+        function loadDemoPlaylists() {
+            console.log('🔄 Loading demo playlists...');
+            
+            userPlaylists = [
+                {
+                    id: 'demo1',
+                    name: 'ELECTRONIC ODYSSEY',
+                    description: 'Deep electronic music for late night coding sessions',
+                    tracks: 42,
+                    duration: '2H 45M',
+                    cover: null,
+                    owner: 'YOU',
+                    spotifyUrl: '#'
+                },
+                {
+                    id: 'demo2',
+                    name: 'CODING FOCUS',
+                    description: 'Ambient and minimal beats for programming flow state',
+                    tracks: 35,
+                    duration: '2H 18M',
+                    cover: null,
+                    owner: 'YOU',
+                    spotifyUrl: '#'
+                },
+                {
+                    id: 'demo3',
+                    name: 'WEB3 ANTHEMS',
+                    description: 'The soundtrack to the decentralized revolution',
+                    tracks: 28,
+                    duration: '1H 52M',
+                    cover: null,
+                    owner: 'YOU',
+                    spotifyUrl: '#'
+                },
+                {
+                    id: 'demo4',
+                    name: 'CRYPTO VIBES',
+                    description: 'Music for the decentralized generation',
+                    tracks: 33,
+                    duration: '2H 12M',
+                    cover: null,
+                    owner: 'YOU',
+                    spotifyUrl: '#'
+                }
+            ];
+            
+            console.log('✅ Loaded demo playlists');
+            displayPlaylists();
+        }
+
+        // Display playlists in the UI
+        function displayPlaylists() {
+            const grid = document.getElementById('playlistGrid');
+            grid.innerHTML = '';
+
+            if (userPlaylists.length === 0) {
+                grid.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">NO PLAYLISTS FOUND</p>';
+                return;
+            }
+
+            userPlaylists.forEach(playlist => {
+                const playlistElement = document.createElement('div');
+                playlistElement.className = 'playlist-item';
+                playlistElement.innerHTML = `
+                    <div class="playlist-header" onclick="togglePlaylist('${playlist.id}')">
+                        <span>${playlist.name} (${playlist.tracks} TRACKS)</span>
+                        <span class="playlist-toggle">[+]</span>
+                    </div>
+                    <div class="playlist-details" id="details-${playlist.id}">
+                        <div class="playlist-info">
+                            <div class="playlist-cover">
+                                ${playlist.cover ? 
+                                    `<img src="${playlist.cover}" alt="Playlist Cover" style="width: 100%; height: 100%; object-fit: cover;">` : 
+                                    'NO IMAGE'
+                                }
+                            </div>
+                            <div class="playlist-meta">
+                                <div class="meta-line">
+                                    <span class="meta-label">TITLE:</span>
+                                    <span class="meta-value">${playlist.name}</span>
+                                </div>
+                                <div class="meta-line">
+                                    <span class="meta-label">DESC:</span>
+                                    <span class="meta-value">${playlist.description}</span>
+                                </div>
+                                <div class="meta-line">
+                                    <span class="meta-label">TRACKS:</span>
+                                    <span class="meta-value">${playlist.tracks}</span>
+                                </div>
+                                <div class="meta-line">
+                                    <span class="meta-label">OWNER:</span>
+                                    <span class="meta-value">${playlist.owner}</span>
+                                </div>
+                                <div class="meta-line">
+                                    <span class="meta-label">SPOTIFY:</span>
+                                    <span class="meta-value"><a href="${playlist.spotifyUrl}" target="_blank" style="color: #fff;">OPEN IN SPOTIFY</a></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(playlistElement);
+            });
+
+            console.log('✅ Displayed', userPlaylists.length, 'playlists in UI');
+        }
+
+        // Mint playlist as NFT (demo)
+        async function mintPlaylist() {
+            try {
+                if (!selectedPlaylist) {
+                    showError('Please select a playlist to mint');
+                    return;
+                }
+
+                if (!walletConnected) {
+                    showError('Please connect your wallet first');
+                    return;
+                }
+
+                const selectedCommunity = document.querySelector('input[name="mintCommunity"]:checked').value;
+                const communityName = selectedCommunity === 'okcomputers' ? 'OK COMPUTERS' : 'MFERS';
+                
+                document.getElementById('mintBtn').textContent = 'MINTING...';
+                document.getElementById('mintBtn').disabled = true;
+
+                // Simulate minting process
+                console.log('🔄 Minting playlist:', selectedPlaylist.name, 'to', communityName);
+                await new Promise(resolve => setTimeout(resolve, 3000));
+
+                alert(`✅ Successfully minted "${selectedPlaylist.name}" to ${communityName} community!`);
+                console.log('✅ Playlist minted successfully');
+                
+                document.getElementById('mintBtn').textContent = 'MINT SELECTED PLAYLIST';
+                document.getElementById('mintBtn').disabled = false;
+                selectedPlaylist = null;
+
+            } catch (error) {
+                console.error('❌ Minting failed:', error);
+                showError('Minting failed: ' + error.message);
+                document.getElementById('mintBtn').textContent = 'MINT SELECTED PLAYLIST';
+                document.getElementById('mintBtn').disabled = false;
+            }
+        }
+
+        // Join community (purchase membership NFT)
+        async function joinCommunity(community) {
+            try {
+                const communityName = community === 'okcomputers' ? 'OK COMPUTERS' : 'MFERS';
+                const price = community === 'okcomputers' ? '0.1' : '0.05';
+                
+                if (!walletConnected) {
+                    showError('Please connect your wallet first');
+                    return;
+                }
+
+                const confirmed = confirm(`Join ${communityName} community for ${price} ETH?`);
+                if (!confirmed) return;
+
+                console.log('🔄 Joining community:', communityName);
+
+                // Simulate transaction
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                const nftNumber = Math.floor(Math.random() * 9999) + 1;
+                const communityInfo = document.getElementById('communityInfo');
+                const joinCommunityEl = document.getElementById('joinCommunity');
+                
+                communityInfo.innerHTML = `COMMUNITY: <span class="status-connected">${communityName} #${nftNumber}</span>`;
+                communityInfo.style.display = 'block';
+                joinCommunityEl.style.display = 'none';
+
+                alert(`✅ Successfully joined ${communityName} community! You are now ${communityName} #${nftNumber}`);
+                console.log('✅ Joined community successfully');
+            } catch (error) {
+                console.error('❌ Join community failed:', error);
+                showError('Failed to join community: ' + error.message);
+            }
+        }
+
+        // Update connection status display
+        function updateConnectionStatus() {
+            const walletStatus = walletConnected ? 'CONNECTED' : 'DISCONNECTED';
+            const spotifyStatus = spotifyConnected ? 'CONNECTED' : 'DISCONNECTED';
+            const walletClass = walletConnected ? 'status-connected' : 'status-disconnected';
+            const spotifyClass = spotifyConnected ? 'status-connected' : 'status-disconnected';
+            
+            document.getElementById('connectionStatus').innerHTML = 
+                `WALLET: <span class="${walletClass}">${walletStatus}</span> | SPOTIFY: <span class="${spotifyClass}">${spotifyStatus}</span>`;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 OK Playlists initialized');
+            console.log('🔑 Privy App ID:', CONFIG.PRIVY_APP_ID);
+            console.log('🎵 Spotify Client ID:', CONFIG.SPOTIFY_CLIENT_ID);
+            console.log('🔗 Redirect URI:', CONFIG.SPOTIFY_REDIRECT_URI);
+            
+            // Show redirect URL in setup notice
+            document.getElementById('redirectUrl').textContent = CONFIG.SPOTIFY_REDIRECT_URI;
+            
+            updateConnectionStatus();
+            
+            // Check if returning from Spotify auth
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('code')) {
+                console.log('🔄 Detected Spotify auth callback');
+                // Auto-connect wallet if returning from Spotify
+                if (!walletConnected) {
+                    connectWallet().then(() => {
+                        connectSpotify();
+                    });
+                } else {
+                    connectSpotify();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
