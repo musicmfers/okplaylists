@@ -1,3 +1,5 @@
+@import "tailwindcss"; /* Added as requested */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -78,7 +80,7 @@
     @apply mt-3 text-[11px] tracking-wide text-center font-normal;
   }
   .status-connected {
-    @apply text-ok-green;
+    @apply text-ok-spotify-green; /* Changed to spotify green for consistency */
   }
   .status-disconnected {
     @apply text-ok-medium-gray;
@@ -87,7 +89,7 @@
     @apply text-[11px] mt-2 text-center font-normal text-destructive;
   }
   .success-message {
-    @apply text-[11px] mt-2 text-center font-normal text-ok-green;
+    @apply text-[11px] mt-2 text-center font-normal text-ok-spotify-green; /* Changed to spotify green for consistency */
   }
 
   /* Communities display */
