@@ -1,0 +1,311 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap");
+
+@layer base {
+  :root {
+    --background: 0 0% 0%; /* Black */
+    --foreground: 0 0% 100%; /* White */
+    --card: 0 0% 5%; /* rgba(255, 255, 255, 0.05) */
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 25 95% 50%; /* ok-orange */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 25%; /* #444 */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 40%; /* #666 */
+    --muted-foreground: 0 0% 60%; /* #999 */
+    --accent: 0 0% 5%; /* rgba(255, 255, 255, 0.05) */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%; /* #ff6666 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%; /* #333 */
+    --input: 0 0% 10%; /* rgba(255,255,255,0.1) */
+    --ring: 25 95% 50%; /* ok-orange */
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  body {
+    @apply font-orbitron bg-black text-white text-xs leading-tight;
+  }
+  .container {
+    @apply max-w-[1400px] mx-auto px-4 py-4 md:py-8;
+  }
+  /* Panels and Cards - general style */
+  .panel,
+  .dashboard-card,
+  .header {
+    @apply bg-card border border-border p-4 mb-5;
+  }
+  /* Specific header styling */
+  .header {
+    @apply text-center pb-8;
+  }
+  .title {
+    @apply text-4xl font-extrabold mb-2 tracking-[6px];
+  }
+  .subtitle {
+    @apply text-sm mb-4 tracking-wider font-normal;
+  }
+  .description {
+    @apply text-[11px] text-left max-w-xl mx-auto leading-snug font-normal;
+  }
+
+  /* Connect Buttons */
+  .connect-btn {
+    @apply bg-muted text-foreground border border-muted py-3 px-6 font-orbitron text-xs cursor-pointer block mx-auto mb-2 uppercase tracking-wide transition-all font-bold;
+  }
+  .connect-btn:hover:not(:disabled) {
+    @apply bg-gray-500 border-gray-500; /* Darker gray on hover */
+  }
+  .connect-btn:disabled {
+    @apply bg-ok-dark-gray text-ok-medium-gray border-ok-dark-gray cursor-not-allowed;
+  }
+  .wallet-btn {
+    @apply bg-ok-orange border-ok-orange;
+  }
+  .wallet-btn:hover:not(:disabled) {
+    @apply bg-orange-600 border-orange-600;
+  }
+
+  /* Status Lines */
+  .status-line {
+    @apply mt-3 text-[11px] tracking-wide text-center font-normal;
+  }
+  .status-connected {
+    @apply text-ok-green;
+  }
+  .status-disconnected {
+    @apply text-ok-medium-gray;
+  }
+  .error-message {
+    @apply text-[11px] mt-2 text-center font-normal text-destructive;
+  }
+  .success-message {
+    @apply text-[11px] mt-2 text-center font-normal text-ok-green;
+  }
+
+  /* Communities display */
+  .communities-line {
+    @apply mt-2 text-[10px] tracking-wide text-center font-normal text-ok-orange;
+  }
+  .community-tag {
+    @apply inline-block bg-ok-orange/[0.2] border border-ok-orange py-0.5 px-1.5 mx-0.5 rounded-[3px] text-[9px] font-normal;
+  }
+
+  /* Dashboard Grid */
+  .dashboard-grid {
+    @apply grid gap-4 mb-6;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  /* Expandable Card Headers */
+  .expandable-header {
+    @apply cursor-pointer select-none relative transition-opacity duration-200 text-foreground text-sm tracking-wider uppercase m-0 font-bold pb-2;
+  }
+  .expandable-header:hover {
+    @apply opacity-80;
+  }
+  .expandable-header::after {
+    content: "[+]";
+    position: absolute;
+    right: 0;
+    font-size: 11px;
+  }
+  .expandable-header.active::after {
+    content: "[-]";
+  }
+  .expandable-header.active {
+    @apply border-b border-border pb-2 mb-3;
+  }
+  .expandable-content {
+    @apply hidden;
+  }
+  .expandable-content.active {
+    @apply block;
+  }
+
+  /* Profile Card */
+  .profile-card {
+    @apply flex items-start gap-4 relative;
+  }
+  .profile-card img {
+    @apply w-11 h-11 rounded-full border-2 border-white flex-shrink-0;
+  }
+  .profile-info {
+    @apply flex-1;
+  }
+  .profile-info h4 {
+    @apply text-sm mb-0.5 font-bold;
+  }
+  .profile-info p {
+    @apply text-ok-light-gray text-[9px] mb-1.5 font-normal;
+  }
+
+  /* Now Playing */
+  .now-playing-display {
+    @apply absolute top-0 right-0 w-[130px] h-[14px] text-[7px] text-ok-spotify-green font-normal bg-ok-spotify-green/[0.1] border border-ok-spotify-green/[0.3] rounded-[3px] overflow-hidden flex items-center px-0.5;
+  }
+  .now-playing-text {
+    @apply whitespace-nowrap;
+  }
+
+  /* Genres */
+  .genre-tags {
+    @apply flex flex-wrap gap-1 mt-1.5;
+  }
+  .genre-tag {
+    @apply bg-secondary py-0.5 px-1.5 rounded-xl text-[8px] font-normal;
+  }
+
+  /* Item Lists (Artists, Tracks) */
+  .item-list {
+    @apply max-h-[200px] overflow-y-auto;
+  }
+  .item-list li {
+    @apply flex items-center gap-2 py-1.5 border-b border-ok-dark-gray last:border-b-0;
+  }
+  .item-list img {
+    @apply w-7 h-7 rounded-[3px];
+  }
+  .item-info {
+    @apply flex-1;
+  }
+  .item-name {
+    @apply text-[11px] text-white font-normal;
+  }
+  .item-detail {
+    @apply text-[9px] text-ok-light-gray font-normal;
+  }
+  .clickable-item {
+    @apply cursor-pointer transition-colors duration-200;
+  }
+  .clickable-item:hover {
+    @apply bg-white/[0.1];
+  }
+
+  /* Playlist items */
+  .playlist-item {
+    @apply cursor-pointer transition-colors duration-200 py-1.5 border-b border-ok-dark-gray last:border-b-0 relative;
+  }
+  .playlist-item:hover {
+    @apply bg-white/[0.05];
+  }
+  .playlist-item-header {
+    @apply flex items-center gap-2;
+  }
+  .playlist-item-header img {
+    @apply w-7 h-7 rounded-[3px] select-none pointer-events-none;
+  }
+  .playlist-item-info {
+    @apply flex-1;
+  }
+  .playlist-item-info .item-name {
+    @apply text-[11px] text-white font-normal select-text cursor-text inline-block;
+  }
+  .playlist-item-info .item-detail {
+    @apply text-[9px] text-ok-light-gray font-normal select-none pointer-events-none;
+  }
+
+  /* Expanded playlist details */
+  .playlist-item-details {
+    @apply hidden mt-1.5 text-[9px] text-zinc-300 font-normal;
+  }
+  .playlist-item.expanded .playlist-item-details {
+    @apply block;
+  }
+  .playlist-detail-row {
+    @apply mb-1 text-zinc-300;
+  }
+  .playlist-detail-row strong {
+    @apply text-white font-bold;
+  }
+
+  /* Song list */
+  .playlist-songs-list {
+    @apply max-h-30 overflow-y-auto mt-1.5 border-t border-ok-dark-gray pt-1;
+  }
+  .playlist-songs-list ul {
+    @apply list-none p-0 m-0;
+  }
+  .playlist-songs-list li {
+    @apply flex items-center gap-1 py-0.5 border-b border-ok-dark-gray last:border-b-0 text-[8px] text-zinc-300 font-normal;
+  }
+  .song-number {
+    @apply text-ok-medium-gray text-[7px] w-4 text-right flex-shrink-0 font-normal;
+  }
+  .song-info {
+    @apply flex-1;
+  }
+  .song-name {
+    @apply text-white font-normal;
+  }
+  .song-artist {
+    @apply text-ok-light-gray font-normal;
+  }
+
+  /* Spotify link */
+  .playlist-spotify-link {
+    @apply text-white !important no-underline text-[9px] font-bold block text-right mt-1.5;
+  }
+  .playlist-spotify-link:hover {
+    @apply underline;
+  }
+
+  /* Coming Soon */
+  .coming-soon {
+    @apply text-center py-10 px-5 text-ok-medium-gray text-[11px] tracking-wide font-normal;
+  }
+  .coming-soon-icon {
+    @apply text-2xl mb-3 text-ok-orange;
+  }
+  .coming-soon-text {
+    @apply uppercase mb-2 font-bold;
+  }
+  .coming-soon-desc {
+    @apply text-[9px] leading-snug;
+  }
+
+  /* Footer */
+  .footer {
+    @apply text-center mt-10 py-5 border-t border-ok-dark-gray text-[10px] text-ok-medium-gray font-normal;
+  }
+
+  /* Playlist action buttons */
+  .playlist-actions {
+    @apply absolute top-1.5 right-1.5 hidden gap-0.5;
+  }
+  .playlist-item.expanded .playlist-actions {
+    @apply flex;
+  }
+  .playlist-action-btn {
+    @apply bg-secondary py-0.5 px-1.5 rounded-md text-[7px] font-normal cursor-pointer text-white border border-secondary transition-all duration-200;
+  }
+  .playlist-action-btn:hover {
+    @apply bg-gray-500 border-gray-500;
+  }
+  .fc-share {
+    @apply bg-ok-farcaster-purple border-ok-farcaster-purple;
+  }
+  .fc-share:hover {
+    @apply bg-purple-600 border-purple-600;
+  }
+  .mint-btn {
+    @apply bg-ok-orange border-ok-orange opacity-60 cursor-not-allowed;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+    .now-playing-display {
+      @apply w-[100px] text-[6px];
+    }
+  }
+}
